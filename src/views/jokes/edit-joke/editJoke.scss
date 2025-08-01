@@ -1,0 +1,53 @@
+.ant-select-selection-item {
+  align-items: center;
+
+  .ant-select-selection-item-content {
+    padding: 1rem 0rem 1rem 0rem;
+  }
+}
+
+.ant-select-selection-item {
+  margin: 5px;
+}
+
+.ant-select-selector {
+  height: auto !important;
+  min-height: 2.5rem;
+}
+
+.form-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.form-container {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  gap: 4;
+  height: 100%;
+  row-gap: 1rem;
+  width: 80%;
+  margin-bottom: 2rem;
+}
+
+.form-label {
+  height: 100%;
+  text-align: right;
+  padding-right: 1rem;
+  align-content: center;
+  font-size: 1rem;
+}
+
+.conversation-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+.conversation {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,25 @@
+.subcategory-page {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 15px;
+  padding: '1rem';
+
+  .container {
+    overflow: hidden;
+    overflow-x: scroll;
+    padding: 0;
+  }
+
+  .ant-btn {
+    border-radius: 5px;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.ant-select,
+.ant-select-multiple {
+  height: auto !important;
+}
