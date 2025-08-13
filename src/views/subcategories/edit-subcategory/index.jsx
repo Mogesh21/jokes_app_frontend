@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Select, notification, Layout, Switch, Upload, message } from 'antd';
+import { Form, Input, Button, Select, notification, Layout, Upload, message } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from 'config/axiosConfig';
 import './editSubCategory.scss';
@@ -82,10 +82,16 @@ const EditSubCategory = () => {
       }
     } catch (err) {
       console.error(err);
-      notification.error({
-        message: 'Error occurred',
-        description: 'Unable to update category. Please try again.'
-      });
+      if (err.response.status === 413) {
+        notification.error({
+          message: err.response?.data?.message || 'File size must be less than 1MB'
+        });
+      } else {
+        notification.error({
+          message: 'Error occurred',
+          description: 'Unable to update category. Please try again.'
+        });
+      }
     } finally {
       setLoading(false);
     }

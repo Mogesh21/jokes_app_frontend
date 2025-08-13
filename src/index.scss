@@ -55,6 +55,19 @@ body {
   display: none;
 }
 
+.ant-image-preview-mask {
+  z-index: 2000 !important;
+}
+
+.ant-image-preview-img,
+.ant-image-preview-wrap {
+  z-index: 2001 !important;
+}
+
+.ant-image-preview-operations-wrapper {
+  z-index: 2005 !important;
+}
+
 .ant-pagination-options-size-changer {
   margin-right: 2rem important;
 }

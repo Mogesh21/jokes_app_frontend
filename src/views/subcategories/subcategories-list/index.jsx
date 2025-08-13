@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Space, notification, Popconfirm, Image, Input, Switch } from 'antd';
+import { Table, Button, Space, notification, Popconfirm, Image, Input } from 'antd';
 import './SubCategory.scss';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from 'config/axiosConfig';
@@ -106,7 +106,7 @@ const SubCategoriesList = () => {
 
   const handleDelete = async (record) => {
     try {
-      const response = await axiosInstance.delete(`/subcategory/${record.id}`);
+      const response = await axiosInstance.delete(`/subcategories/${record.id}`);
       if (response.status === 200) {
         notification.success({ message: 'Success', description: 'Sub Category removed sucessfully' });
         fetchSubCategories();

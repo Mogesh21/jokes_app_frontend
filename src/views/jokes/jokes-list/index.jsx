@@ -18,7 +18,6 @@ const JokesList = () => {
   const fetchJokes = async () => {
     try {
       const response = await axiosInstance.get('/jokes');
-      console.log(response.data.data.reverse());
       setJokes(response.data.data.reverse());
     } catch (err) {
       notification.error({ message: 'Unable to get Jokes', duration: 2 });
@@ -36,7 +35,9 @@ const JokesList = () => {
       setFilteredData(
         jokes.filter(
           (joke) =>
-            joke.cat_name.toLowerCase().includes(search.toLowerCase()) || joke.subcat_name?.toLowerCase().includes(search.toLowerCase())
+            joke.cat_name.toLowerCase().includes(search.toLowerCase()) ||
+            joke.subcat_name?.toLowerCase().includes(search.toLowerCase()) ||
+            joke.content.joke?.toLowerCase().includes(search.toLowerCase())
         )
       );
     } else {
@@ -49,7 +50,7 @@ const JokesList = () => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      sorter: (a, b) => b.id - a.id,
+      sorter: (a, b) => b.id - a.id
     },
     {
       title: 'Category Name',
@@ -108,7 +109,7 @@ const JokesList = () => {
         throw response.data.message;
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       notification.error({ message: 'Server Error', description: 'Unable to delete! Please try again...' });
     }
   };

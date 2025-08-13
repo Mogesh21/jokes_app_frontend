@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Select, notification, Layout, Switch, Upload } from 'antd';
+import { Form, Input, Button, Select, notification, Layout, Upload } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from 'config/axiosConfig';
 import './addSubCategory.scss';
@@ -31,10 +31,16 @@ const AddSubCategory = () => {
       }
     } catch (err) {
       console.log(err);
-      notification.error({
-        message: 'Error Occured....',
-        description: 'Unable to create! Please try again...'
-      });
+      if (err.response.status === 413) {
+        notification.error({
+          message: err.response?.data?.message || ''
+        });
+      } else {
+        notification.error({
+          message: 'Error Occured....',
+          description: 'Unable to create! Please try again...'
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -86,7 +92,11 @@ const AddSubCategory = () => {
         onFinish={onFinish}
       >
         <Form.Item label="Select Category" name="cat_id" rules={[{ required: true, message: 'Please select the Category' }]}>
-          <Select>
+          <Select
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) => option?.children?.toString().toLowerCase().includes(input.toLowerCase())}
+          >
             {categories.map((category) => (
               <Select.Option value={category.id} key={category.id}>
                 {category.name}

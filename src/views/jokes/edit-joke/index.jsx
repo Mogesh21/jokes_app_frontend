@@ -145,7 +145,13 @@ const EditJoke = () => {
       }
     } catch (err) {
       console.log(err);
-      notification.error({ message: 'Unable to update joke.Please refresh the page' });
+      if (err.response.status === 413) {
+        notification.error({
+          message: err.response?.data?.message || 'File size must be less than 1MB'
+        });
+      } else {
+        notification.error({ message: 'Unable to update joke.Please refresh the page' });
+      }
     } finally {
       setLoading(false);
     }
@@ -188,7 +194,13 @@ const EditJoke = () => {
 
       <Form layout="horizontal" labelCol={{ span: 8 }} wrapperCol={{ span: 12 }} form={form} onFinish={onFinish}>
         <Form.Item label="Select Category" name="cat_id" rules={[{ required: true, message: 'Category is required' }]}>
-          <Select placeholder="Choose category" disabled>
+          <Select
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}
+            placeholder="Choose category"
+            disabled
+          >
             <Select.Option value={currentCategory.id} key={currentCategory.id}>
               {currentCategory.name}
             </Select.Option>
@@ -197,7 +209,12 @@ const EditJoke = () => {
 
         {subcategories.length > 0 && (
           <Form.Item label="Select Sub Category" name="subcat_id" rules={[{ required: true, message: 'Sub Category is required' }]}>
-            <Select placeholder="Choose subcategory">
+            <Select
+              showSearch
+              optionFilterProp="children"
+              filterOption={(input, option) => option?.children?.toLowerCase().includes(input.toLowerCase())}
+              placeholder="Choose subcategory"
+            >
               {subcategories.map((subcategory) => (
                 <Select.Option value={subcategory.id} key={subcategory.id}>
                   {subcategory.name}

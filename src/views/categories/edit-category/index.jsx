@@ -57,7 +57,7 @@ const EditCategory = () => {
 
   // Submit updated category
   const onFinish = async (values) => {
-    setLoading(true)
+    setLoading(true);
     values.cover_image = state.record.cover_image;
 
     try {
@@ -86,10 +86,16 @@ const EditCategory = () => {
       }
     } catch (err) {
       console.error(err);
-      notification.error({
-        message: 'Error occurred',
-        description: 'Unable to update category. Please try again.'
-      });
+      if (err.response.status === 413) {
+        notification.error({
+          message: err.response?.data?.message || 'File size must be less than 1MB'
+        });
+      } else {
+        notification.error({
+          message: 'Error occurred',
+          description: 'Unable to update category. Please try again.'
+        });
+      }
     } finally {
       setLoading(false);
     }

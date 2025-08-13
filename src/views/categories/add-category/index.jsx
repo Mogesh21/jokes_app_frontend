@@ -32,10 +32,16 @@ const AddCategory = () => {
       }
     } catch (err) {
       console.log(err);
-      notification.error({
-        message: 'Error Occured....',
-        description: 'Unable to create! Please try again...'
-      });
+      if (err.response.status === 413) {
+        notification.error({
+          message: err.response?.data?.message || 'File size must be less than 1MB'
+        });
+      } else {
+        notification.error({
+          message: 'Error Occured....',
+          description: 'Unable to create! Please try again...'
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -63,10 +69,12 @@ const AddCategory = () => {
     maxCount: 1,
     beforeUpload: (file) => {
       const isValidType = ['image/jpeg', 'image/png'].includes(file.type);
-      if (!isValidType) {
-        message.error('You can only upload JPG, JPEG, PNG, or WEBP files!');
-        setFileValid(false);
-        return false;
+      if (file.size > 1 * 1024 * 1024) {
+        notification.error({ message: 'Image must be less than 1MB' });
+        form.setFieldsValue({ cover_image: undefined });
+      } else if (!isValidType) {
+        notification.error({ message: 'You can only upload JPG, JPEG, PNG, or WEBP files!' });
+        return Upload.LIST_IGNORE;
       }
       setFileValid(true);
     }
@@ -87,7 +95,9 @@ const AddCategory = () => {
         <Form.Item label="Select Type" name="type_id" rules={[{ required: true, message: 'Please select the Type!' }]}>
           <Select>
             {types.map((type) => (
-              <Select.Option value={type.id}>{type.name}</Select.Option>
+              <Select.Option key={type} value={type.id}>
+                {type.name}
+              </Select.Option>
             ))}
           </Select>
         </Form.Item>
