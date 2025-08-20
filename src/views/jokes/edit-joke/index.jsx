@@ -86,6 +86,7 @@ const EditJoke = () => {
     } else {
       navigate('/app/dashboard/jokes/jokes-list');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   const fetchCategoryById = async (id) => {
