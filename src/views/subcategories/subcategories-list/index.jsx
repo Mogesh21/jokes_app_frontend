@@ -42,24 +42,18 @@ const SubCategoriesList = () => {
 
   const columns = [
     {
-      title: 'SNO',
-      key: 'cat_id',
-      render: (_, record, index) => <div style={{ width: 'max-content', textWrap: 'nowrap' }}>{index + 1}</div>
+      title: 'Subcategory Id',
+      dataIndex: 'id',
+      key: 'id'
     },
     {
-      title: 'Category Id',
-      dataIndex: 'cat_id',
-      key: 'cat_id',
-      render: (_, record) => <div style={{ width: 'max-content', textWrap: 'nowrap' }}>{record.cat_id}</div>
+      title: 'Name',
+      dataIndex: 'name'
     },
     {
       title: 'Category Name',
       dataIndex: 'cat_name',
       render: (_, record) => <div style={{ width: 'max-content', textWrap: 'nowrap' }}>{record.cat_name}</div>
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name'
     },
     {
       title: 'Color',

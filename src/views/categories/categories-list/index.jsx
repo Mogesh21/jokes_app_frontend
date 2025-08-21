@@ -46,6 +46,11 @@ const CategoriesList = () => {
       render: (_, record) => <div style={{ width: 'max-content', textWrap: 'nowrap' }}>{record.type_id}</div>
     },
     {
+      title: 'Category Id',
+      dataIndex: 'id',
+      key: 'id'
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       key: 'name'

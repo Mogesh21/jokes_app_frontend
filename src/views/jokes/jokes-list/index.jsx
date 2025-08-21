@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Space, notification, Popconfirm, Input } from 'antd';
+import { Table, Button, Space, notification, Popconfirm, Input, Select } from 'antd';
 import './joke.scss';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from 'config/axiosConfig';
@@ -9,11 +9,24 @@ const JokesList = () => {
   const [jokes, setJokes] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [search, setSearch] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState(null);
   const [tableLoading, setTableLoading] = useState(true);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10
   });
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get('/categories');
+      setCategories(response.data.data.reverse());
+    } catch (err) {
+      notification.error({ message: 'Unable to get Categories', duration: 2 });
+    } finally {
+      setTableLoading(false);
+    }
+  };
 
   const fetchJokes = async () => {
     try {
@@ -27,23 +40,41 @@ const JokesList = () => {
   };
 
   useEffect(() => {
+    fetchCategories();
     fetchJokes();
+    const storedPagination = JSON.parse(localStorage.getItem('jokesPagination'));
+    const storedSearch = localStorage.getItem('jokesSearch');
+    if (storedPagination) {
+      const maxPage = Math.ceil(jokes.length / (storedPagination.pageSize || 10));
+      if (storedPagination.current > maxPage && maxPage > 0) {
+        setPagination({ ...storedPagination, current: 1 });
+      } else {
+        setPagination(storedPagination);
+      }
+    }
+    if (storedSearch) {
+      setSearch(storedSearch);
+    }
   }, []);
 
   useEffect(() => {
-    if (search) {
-      setFilteredData(
-        jokes.filter(
-          (joke) =>
-            joke.cat_name.toLowerCase().includes(search.toLowerCase()) ||
-            joke.subcat_name?.toLowerCase().includes(search.toLowerCase()) ||
-            joke.content.joke?.toLowerCase().includes(search.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredData(jokes);
+    let newData = jokes;
+    if (currentCategory) {
+      newData = newData.filter((joke) => joke.cat_id === currentCategory);
     }
-  }, [jokes, search]);
+    if (search) {
+      newData = newData.filter(
+        (joke) =>
+          joke.subcat_name?.toLowerCase().includes(search.toLowerCase()) || joke.content.joke?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    setFilteredData(newData);
+  }, [jokes, search, currentCategory]);
+
+  useEffect(() => {
+    localStorage.setItem('jokesPagination', JSON.stringify(pagination));
+    localStorage.setItem('jokesSearch', search);
+  }, [pagination, search]);
 
   const columns = [
     {
@@ -58,7 +89,10 @@ const JokesList = () => {
     },
     {
       title: 'Sub Category Name',
-      dataIndex: 'subcat_name'
+      dataIndex: 'subcat_name',
+      sorter: (a, b) => {
+        return a.subcat_name.localeCompare(b.subcat_name);
+      }
     },
     {
       title: 'Content',
@@ -116,7 +150,20 @@ const JokesList = () => {
 
   return (
     <div className="jokes-page">
-      <div className="search-container">
+      <div className="search-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Select
+          value={currentCategory}
+          onChange={(value) => setCurrentCategory(value)}
+          placeholder="Select Category"
+          style={{ width: 200 }}
+        >
+          <Select.Option key={null} value="" />
+          {categories.map((category) => (
+            <Select.Option key={category.id} value={category.id}>
+              {category.name}
+            </Select.Option>
+          ))}
+        </Select>
         <Input placeholder="Search here" value={search} className="search-bar" onChange={(e) => setSearch(e.target.value)} />
       </div>
       <div className="container">
